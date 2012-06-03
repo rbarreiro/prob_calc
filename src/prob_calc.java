@@ -27,15 +27,20 @@ public class prob_calc {
 		    	break;
 		    }
 		    
-		    inst = Grammar.ExprParser.parse(message);
-
-		    if( inst instanceof Attribution){
-		    	attr = (Attribution) inst;
-		    	Grammar.STATE.put(attr.getId(), attr.getRv());
-		    }else{
-		    	System.out.println(inst);
-		    }
 		    
+		    try {
+			    inst = Grammar.ExprParser.parse(message);
+
+			    if( inst instanceof Attribution){
+			    	attr = (Attribution) inst;
+			    	Grammar.STATE.put(attr.getId(), attr.getRv());
+			    }else{
+			    	System.out.println(inst);
+			    }
+		    } catch (Exception e) {
+		    	System.out.println(e);
+		    }
+		     
 		    
 	    }	    
 	    
