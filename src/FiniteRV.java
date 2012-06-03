@@ -73,4 +73,27 @@ public class FiniteRV extends RandomVariable {
 		}
 	}
 
+
+	@Override
+	Double prob_comp(Condition c, RandomVariable b) {
+		Double res;
+		Map<Integer, Double> prbB;
+		
+		if(b instanceof FiniteRV){
+			prbB = ((FiniteRV) b).prb;
+		}else{
+			return 0.0;
+		}
+		res = 0.0;
+		for ( Integer i : prb.keySet()) {
+			for ( Integer j : prbB.keySet()) {
+				if(c.test(i,j)){
+					res = res + prb.get(i) * prbB.get(j);
+				}
+			}
+		}
+
+		return res;
+	}
+
 }

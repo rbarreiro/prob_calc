@@ -147,13 +147,9 @@ public class Grammar {
 			new org.codehaus.jparsec.functors.Map<Tuple3<RandomVariable,Token,RandomVariable>, Double>() {
 				
 		      public Double map(Tuple3<RandomVariable,Token,RandomVariable> s) {
-		        if(s.b.toString() == "<"){
-		        	return 0.5;
-		        }else{
-		        	return 0.0;
-		        }
+		    	  return s.a.prob_comp(new Condition(s.b.toString()), s.c);
 		      }
-		      
+
 		    });	
 		  
 		  static final Parser<Double> Prob = 
