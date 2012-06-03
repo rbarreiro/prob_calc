@@ -15,23 +15,20 @@ public class FiniteRV extends RandomVariable {
 		return prb.get(point);
 	}
 
-	@Override
-	RandomVariable plus(RandomVariable b) {
+	private FiniteRV applyBinOp(BinOp op,FiniteRV b){
 		Map<Integer,Double> res;
 		Double p;
 		Integer val;
 		Double pval;
 		Map<Integer, Double> prbB;
 		
-		if(b instanceof FiniteRV){
-			prbB = ((FiniteRV) b).prb;
-		}else{
-			return null;
-		}
+
+		prbB = b.prb;
+
 		res = new HashMap<Integer,Double>();
 		for ( Integer i : prb.keySet()) {
 			for ( Integer j : prbB.keySet()) {
-				val = i+j;
+				val = op.calc(i,j);
 				pval = prb.get(i) * prbB.get(j);
 				if(res.containsKey(val)){
 					p = res.get(val)+ pval;
@@ -44,19 +41,29 @@ public class FiniteRV extends RandomVariable {
 		}
 
 		
-		return new FiniteRV(res);
+		return new FiniteRV(res);		
+	}
+	
+	@Override
+	RandomVariable plus(RandomVariable b) {
+		return this.applyBinOp(new BinOp("+"), (FiniteRV)b);
 	}
 
 	@Override
 	RandomVariable times(RandomVariable b) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.applyBinOp(new BinOp("*"), (FiniteRV)b);
 	}
 
 	@Override
 	RandomVariable neg() {
-		// TODO Auto-generated method stub
-		return null;
+		Map<Integer,Double> res;		
+
+		res = new HashMap<Integer,Double>();
+		for ( Integer i : prb.keySet()) {
+			res.put(-i,prb.get(i));
+		}
+	
+		return new FiniteRV(res);
 	}
 	
 	@Override

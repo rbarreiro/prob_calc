@@ -116,6 +116,7 @@ public class Grammar {
 		    Parser<RandomVariable> parser = new OperatorTable<RandomVariable>()
 		        .infixl(op("+", BinaryOperator.PLUS), 10)
 		        .infixl(op("-", BinaryOperator.MINUS), 10)
+		        .infixl(op("*", BinaryOperator.MUL), 20)
 		        .prefix(op("-", UnaryOperator.NEG), 30)
 		        .build(unit);
 		    ref.set(parser);
