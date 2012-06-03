@@ -4,8 +4,11 @@ import org.codehaus.jparsec.Parser;
 import org.codehaus.jparsec.Parsers;
 import org.codehaus.jparsec.Scanners;
 import org.codehaus.jparsec.Terminals;
+import org.codehaus.jparsec.Token;
 import org.codehaus.jparsec.functors.Binary;
+import org.codehaus.jparsec.functors.Tuple3;
 import org.codehaus.jparsec.functors.Unary;
+
 
 
 public class Grammar {
@@ -46,18 +49,39 @@ public class Grammar {
 		      }
 		      
 		    });
+		  
+		  private static final Terminals OPERATORS = Terminals.operators("u","{","}",",","+", "-", "*", "/", "(", ")");
+
+		  static final Parser<RandomVariable> UNIFORM = 
+			Parsers.tuple(Terminals.IntegerLiteral.PARSER,OPERATORS.token(","), Terminals.IntegerLiteral.PARSER)
+				.between(OPERATORS.token("u").next(OPERATORS.token("{")), OPERATORS.token("}"))
+			.map(				
+			new org.codehaus.jparsec.functors.Map<Tuple3<String,Token,String>, RandomVariable>() {
+				
+		      public RandomVariable map(Tuple3<String,Token,String> s) {
+		    	
+		        return new DiscreteUniform(Integer.parseInt(s.a),Integer.parseInt(s.c));
+		      }
+		      
+		    });
+		  
 
 		  
+		  static final Parser<RandomVariable>  RNDVAR= Parsers.or(NUMBER,UNIFORM); 
 		  
-		  static final Parser<RandomVariable>  RNDVAR= NUMBER; 
 		  
-		  private static final Terminals OPERATORS = Terminals.operators("=","+", "-", "*", "/", "(", ")");
+		  
 		  
 		  static final Parser<Void> IGNORED =
 		      Scanners.WHITESPACES.skipMany();
 		      
 		  static final Parser<?> TOKENIZER =
-		      Parsers.or(Terminals.Identifier.TOKENIZER, Terminals.IntegerLiteral.TOKENIZER, OPERATORS.tokenizer());
+		      Parsers.or(
+			    		  /*Terminals.Identifier.TOKENIZER,*/
+			    		  Terminals.IntegerLiteral.TOKENIZER, 
+			    		  OPERATORS.tokenizer()
+		    		  );
+		
 		  
 		  static Parser<?> term(String... names) {
 		    return OPERATORS.token(names);
@@ -80,7 +104,9 @@ public class Grammar {
 		    return parser;
 		  }
 		  
-		  public static final Parser<RandomVariable> ExprParser = calculator(RNDVAR).from(TOKENIZER, IGNORED);	
+		  public static final Parser<RandomVariable> RVExprParser = calculator(RNDVAR).from(TOKENIZER, IGNORED);
+		  
+		  public static final Parser<RandomVariable> ExprParser = RVExprParser;
 	
 	
 }

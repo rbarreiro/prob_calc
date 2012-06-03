@@ -19,7 +19,8 @@ public class FiniteRV extends RandomVariable {
 	RandomVariable plus(RandomVariable b) {
 		Map<Integer,Double> res;
 		Double p;
-		Integer val;		
+		Integer val;
+		Double pval;
 		Map<Integer, Double> prbB;
 		
 		if(b instanceof FiniteRV){
@@ -31,10 +32,11 @@ public class FiniteRV extends RandomVariable {
 		for ( Integer i : prb.keySet()) {
 			for ( Integer j : prbB.keySet()) {
 				val = i+j;
+				pval = prb.get(i) * prbB.get(j);
 				if(res.containsKey(val)){
-					p = res.get(val)+ i*j;
+					p = res.get(val)+ pval;
 				}else{
-					p = i*j*1.0;
+					p = pval;
 				}
 				
 				res.put(i+j,p);
@@ -60,6 +62,15 @@ public class FiniteRV extends RandomVariable {
 	@Override
 	public String toString() {
 		return prb.toString();
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if(o instanceof FiniteRV){
+			return prb.equals(((FiniteRV)o).prb);
+		}else{
+			return false;
+		}
 	}
 
 }
