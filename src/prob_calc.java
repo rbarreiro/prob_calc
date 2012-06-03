@@ -7,11 +7,14 @@ public class prob_calc {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws IOException {
+		
+		Object inst;
+		Attribution attr;
 
 	    // Defines the standard input stream
 	    BufferedReader stdin = new BufferedReader
 	      (new InputStreamReader(System.in));
-	    String message; // Creates a varible called message for input
+	    String message; // Creates a variable called message for input
 	    
 	    System.out.print ("Type q to quit.\n");
 
@@ -23,8 +26,17 @@ public class prob_calc {
 		    if (message.replace(" ","").equals("q")){
 		    	break;
 		    }
+		    
+		    inst = Grammar.ExprParser.parse(message);
 
-		    System.out.println(Grammar.ExprParser.parse(message));
+		    if( inst instanceof Attribution){
+		    	attr = (Attribution) inst;
+		    	Grammar.STATE.put(attr.getId(), attr.getRv());
+		    }else{
+		    	System.out.println(inst);
+		    }
+		    
+		    
 	    }	    
 	    
 	}
